@@ -172,8 +172,8 @@ public class ContactBook
         {
             case NEXT_PAGE: NextPage(); break;
             case PREV_PAGE: PrevPage(); break;
-            case GOTO_PAGE: GoToPage(); break;
-            case PAGE_SIZE: ChangePageSize(); break;
+            case GOTO_PAGE: GotoPage(); break;
+            case PAGE_SIZE: PageSize(); break;
             case CREATE_CONTACT: CreateContact(); break;
             case REVIEW_CONTACT: ReviewContact(); break;
             case UPDATE_CONTACT: UpdateContact(); break;
@@ -223,12 +223,17 @@ public class ContactBook
         page = Math.Clamp(page - 1, 1, PageCount(contacts, size));
     }
 
-    private void GoToPage()
+    private void GotoPage()
     {
-        Console.WriteLine("Go To Page");
+        GotoPage(allContacts, ref page, size);
     }
 
-    private void ChangePageSize()
+    private void GotoPage(List<Contact> contacts, ref int page, int size)
+    {
+        page = GetInt("Enter Page", 1, PageCount(contacts, size));
+    }
+
+    private void PageSize()
     {
         Console.WriteLine("Page Size");
     }
@@ -272,6 +277,24 @@ public class ContactBook
     {
         isExit = true;
     }
+
+    private int GetInt(string prompt, int min, int max)
+    {
+        string options = $"{min}-{max}";
+
+        Console.WriteLine(prompt + $" [{options}]");
+        string answer = Console.ReadLine()!;
+        int value;
+
+        while (!int.TryParse(answer, out value) || value < min || value > max)
+        {
+            Console.WriteLine("ERROR, Invalid option. Please try again.");
+            Console.WriteLine(prompt + $" [{options}]");
+            answer = Console.ReadLine()!;
+        }
+        return value;
+    } 
+
     private string GetOption(string prompt, string[] validOptions, string defaultOption)
     {
         string options = string.Join("/", validOptions);
