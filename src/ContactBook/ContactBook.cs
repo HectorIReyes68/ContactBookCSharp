@@ -37,10 +37,16 @@ public class ContactBook
     };
 
     private List<Contact> allContacts;
-
+    private int page; 
+    private int size;
+    private bool isExit;
+    
     public ContactBook(List<Contact> contacts = null!)
     {
         allContacts = (contacts == null) ? new List<Contact>() : contacts;
+        page = 1; 
+        size = 10;
+        isExit = false;
     }
 
     public void Start()
@@ -71,51 +77,59 @@ public class ContactBook
         Console.WriteLine("Welcome to the Contact Book!");
         PressEnterContinue();
     }
-
     private void ShowContacts()
     {
+        ShowContacts(allContacts, page, size);
+    }
+
+    private void ShowContacts(List<Contact> contacts, int page, int size)
+    {
         Console.Clear();
-        if(allContacts.Count <= 0)
+        if(contacts.Count <= 0)
         {
             Console.WriteLine("No contacts found.");
         }
         else
         {
-            int indexCol = Math.Max("#".Length, allContacts.Count.ToString().Length);
-            int fnameCol = Math.Max("First Name".Length, allContacts.Max(c => c.GetFName()?.Length ?? 0));
-            int lnameCol = Math.Max("Last Name".Length, allContacts.Max(c => c.GetLName()?.Length ?? 0));
-            int phoneCol = Math.Max("Phone".Length, allContacts.Max(c => c.GetPhone()?.Length ?? 0));
-            int emailCol = Math.Max("Email".Length, allContacts.Max(c => c.GetEmail()?.Length ?? 0));
+            int indexCol = Math.Max("#".Length, contacts.Count.ToString().Length);
+            int fnameCol = Math.Max("First Name".Length, contacts.Max(c => c.GetFName()?.Length ?? 0));
+            int lnameCol = Math.Max("Last Name".Length, contacts.Max(c => c.GetLName()?.Length ?? 0));
+            int phoneCol = Math.Max("Phone".Length, contacts.Max(c => c.GetPhone()?.Length ?? 0));
+            int emailCol = Math.Max("Email".Length, contacts.Max(c => c.GetEmail()?.Length ?? 0));
 
             Console.WriteLine(""
                + "{0, " + -indexCol + "}  "
                + "{1, " + -fnameCol + "}  "
                + "{2, " + -lnameCol + "}  "
                + "{3, " + -phoneCol + "}  "
-               + "{4, " + -emailCol + "}  ", 
+               + "{4, " + -emailCol + "}  ",
                "#", "First Name", "Last Name", "Phone", "Email");
 
-               Console.WriteLine(new string('-', (indexCol+2+fnameCol+2+lnameCol+2+phoneCol+2+emailCol)));
+            Console.WriteLine(new string('-', (indexCol + 2 + fnameCol + 2 + lnameCol + 2 + phoneCol + 2 + emailCol)));
 
-            int n = allContacts.Count;
-            int page = 1;
-            int size = 10;
-            int pageCount = (int) Math.Max(1, Math.Ceiling(n/ (double) size));
-            int s = Math.Clamp((page -1) * size, 0, n );
+            int n = contacts.Count;
+            int pageCount = PageCount(contacts, size);
+            int s = Math.Clamp((page - 1) * size, 0, n);
             int e = Math.Clamp(s + size, 0, n);
 
-            for( int i = s; i < e; i++)
+            for (int i = s; i < e; i++)
             {
-               Contact c = allContacts[i];
+                Contact c = contacts[i];
 
-               Console.WriteLine(""
-               + "{0, " + -indexCol + "}  "
-               + "{1, " + -fnameCol + "}  "
-               + "{2, " + -lnameCol + "}  "
-               + "{3, " + -phoneCol + "}  "
-               + "{4, " + -emailCol + "}  ", 
-               (i + 1), c.GetFName(), c.GetLName(), c.GetPhone(), c.GetEmail());
+                Console.WriteLine(""
+                + "{0, " + -indexCol + "}  "
+                + "{1, " + -fnameCol + "}  "
+                + "{2, " + -lnameCol + "}  "
+                + "{3, " + -phoneCol + "}  "
+                + "{4, " + -emailCol + "}  ",
+                (i + 1), c.GetFName(), c.GetLName(), c.GetPhone(), c.GetEmail());
             }
+
+            for(int i = 0; i < size - e + s; i++)
+            {
+                Console.WriteLine();
+            }
+
             Console.WriteLine();
             Console.WriteLine($"Page {page} of {pageCount} ({s + 1}-{e} of {n})");
         }
@@ -174,7 +188,7 @@ public class ContactBook
 
     private bool ConfirmExit()
     {
-        return Confirm("Do you want to exit?", NO);
+        return (isExit) ? isExit = Confirm("Do you want to exit?", NO) : false;
     }
 
     private void ShowExitScreen()
@@ -191,12 +205,22 @@ public class ContactBook
 
     private void NextPage()
     {
-        Console.WriteLine("Next Page");
+        NextPage(allContacts, ref page, size);
+    }
+
+    private void NextPage(List<Contact> contacts, ref int page, int size)
+    {
+        page = Math.Clamp(page + 1, 1, PageCount(contacts, size));
     }
 
     private void PrevPage()
     {
-        Console.WriteLine("Prev Page");
+        PrevPage(allContacts, ref page, size);
+    }
+
+    private void PrevPage(List<Contact> contacts, ref int page, int size)
+    {
+        page = Math.Clamp(page - 1, 1, PageCount(contacts, size));
     }
 
     private void GoToPage()
@@ -246,9 +270,9 @@ public class ContactBook
 
     private void Exit()
     {
-        Console.WriteLine("Exiting Contact Book...");
+        isExit = true;
     }
-    private string GetOptions(string prompt, string[] validOptions, string defaultOption)
+    private string GetOption(string prompt, string[] validOptions, string defaultOption)
     {
         string options = string.Join("/", validOptions);
         Console.WriteLine(prompt + $" [{options}] ({defaultOption}) ");
@@ -269,6 +293,10 @@ public class ContactBook
 
     private bool Confirm(string prompt, string defaultOption)
     {
-        return GetOptions(prompt, YES_NO, defaultOption) == YES;
+        return GetOption(prompt, YES_NO, defaultOption) == YES;
+    }
+    private static int PageCount(List<Contact> contacts, int size)
+    {
+        return (int)Math.Max(1, Math.Ceiling(contacts.Count / (double)size));
     }
 }
