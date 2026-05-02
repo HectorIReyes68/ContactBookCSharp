@@ -45,10 +45,10 @@ public class ContactBook
         string input; 
         do
         {
-            ShowContacts();
-
+            
             do
             {
+                ShowContacts();
                 ShowInputOptions();
                 input = GetInput();
             }
@@ -89,7 +89,7 @@ public class ContactBook
                + "{3, " + -phoneCol + "}  "
                + "{4, " + -emailCol + "}  ", 
                "#", "First Name", "Last Name", "Phone", "Email");
-               
+
                Console.WriteLine(new string('-', (indexCol+2+fnameCol+2+lnameCol+2+phoneCol+2+emailCol)));
 
             int n = allContacts.Count;
@@ -135,7 +135,16 @@ public class ContactBook
 
     private bool IsValidInput(string input)
     {
-        return true;
+        if(!COMMANDS.Contains(input))
+        {
+            Console.WriteLine("ERROR, Invalid input. Please try again.");
+            PressEnterContinue();
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     private void ProcessInput(string input)
