@@ -364,7 +364,7 @@ public class ContactBook
 
         Console.WriteLine();
 
-        if(Confirm("Do you want to update this contact?", YES))
+        if(Confirm("Do you want to update this contact?", NO))
         {
             c.SetFName(fname);
             c.SetLName(lname);
@@ -383,7 +383,40 @@ public class ContactBook
 
     private void DeleteContact()
     {
+        int index = GetInt("Enter Index", 1, allContacts.Count) - 1;
+
+        Console.Clear();
+
+        Console.WriteLine(new string('#', 80));
         Console.WriteLine("Delete Contact");
+        Console.WriteLine(new string('#', 80));
+        Console.WriteLine();
+
+        DeleteContact(index);
+
+        Console.WriteLine();
+        PressEnterContinue(); 
+    }
+
+    private void DeleteContact(int index)
+    {
+        Contact c = allContacts[index];
+
+        ReviewContact(index);
+
+        Console.WriteLine();
+
+        if(Confirm("Do you want to delete this contact?", NO))
+        {
+            allContacts.Remove(c);
+            Console.WriteLine("Contact deleted successfully.");
+        }
+
+        else
+        {
+            Console.WriteLine("Contact deletion cancelled.");
+        }
+        
     }
 
     private void FindContacts()
