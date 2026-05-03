@@ -275,11 +275,33 @@ public class ContactBook
         {
             Console.WriteLine("Contact creation cancelled.");
         }
+        PressEnterContinue();
     }
 
     private void ReviewContact()
     {
+        int index = GetInt("Enter Index", 1, allContacts.Count) - 1;
+        Console.Clear();
+        ReviewContact(index);
+        PressEnterContinue(); 
+    }
+
+    private void ReviewContact(int index)
+    {
+        Contact c = allContacts[index];
+
+        Console.WriteLine(new string('#', 80));
         Console.WriteLine("Review Contact");
+        Console.WriteLine(new string('#', 80));
+        Console.WriteLine();
+        
+
+        Console.WriteLine($"First Name: {c.GetFName()} ");
+        Console.WriteLine($" Last Name: {c.GetLName()} ");
+        Console.WriteLine($"     Phone: {c.GetPhone()} ");
+        Console.WriteLine($"     Email: {c.GetEmail()} ");
+
+        Console.WriteLine();
     }
 
     private void UpdateContact()
