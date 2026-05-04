@@ -112,7 +112,10 @@ public static class ContactSeed
         new Contact("Gloria", "Myers", "", ""),
         new Contact("Jerry", "Long", "919-555-1097", "jerry.long@gmail.com"),
         new Contact("Teresa", "Ross", "702-555-1098", ""),
-        new Contact("Tyler", "Foster", "", "tyler.foster@outlook.com"),
-        new Contact("Sara", "Jimenez", "305-555-1100", "sara.jimenez@yahoo.com")
+        new Contact("Hailey", "", "", "tyler.foster@outlook.com"),
+        new Contact("Sara", "", "", "sara.jimenez@yahoo.com"),
+        new Contact("Sara", "Jimenez", "305-555-1100", "sara.jimenez@yahoo.com"),
+        new Contact("Hailey", "Diaz", "777", "tyler.foster@outlook.com"),
+        new Contact("Hailey", "Gomez", "777", "tyler.creator@outlook.com")
     };
 }
